@@ -55,16 +55,9 @@ else
     return SUCCESS;
 }
 
-int delete(Editor_State *State,char *command)
+int delete(Editor_State *State,int num)
 {
-    int num;
-    sscanf(command,"%d",&num);
-    if(num==0)
-    {
-        printf("Number of characters to delete should be more than 0\n");
-        return FAILURE;
-    }
-    else if(State->head==NULL)
+    if(State->head==NULL)
     {
         printf("Document is Empty\n");
         return FAILURE;
@@ -82,5 +75,60 @@ int delete(Editor_State *State,char *command)
     j++;
     }
     State->col_num=State->col_num-num;
+    return SUCCESS;
+}
+
+int copy_or_cut(Editor_State *State,char *command,int comlen)
+{
+    if(State->head==NULL)
+    {
+        printf("Document Empty\n");
+        return FAILURE;
+    }
+    int left,right;
+    sscanf(command+comlen+1,"%d %d",&left,&right);
+    if(left<0 || left>=right || right>strlen(State->cursor_line->data))
+    {
+        printf("Invalid Range\n");
+        return FAILURE;
+    }
+    State->clipboard=malloc((right-left)+1);
+    if(State->clipboard==NULL)return FAILURE;
+    int i,j;
+    for(i=left,j=0;i<right;i++,j++)
+    State->clipboard[j]=State->cursor_line->data[i];
+    State->clipboard[j]='\0';
+    if(comlen==3)
+    {
+        State->col_num=right;
+        if(delete(State,right-left)==FAILURE)
+        return FAILURE;
+    }
+    return SUCCESS;
+}
+
+int paste(Editor_State *State)
+{
+    if(State->head==NULL)
+    {
+        printf("Document is Empty\n");
+        return FAILURE;
+    }
+    if(State->clipboard==NULL)
+    {
+        printf("The clipboard is Empty\n");
+        return FAILURE;
+    }
+    int len=strlen(State->cursor_line->data);
+    int right_len=strlen(State->cursor_line->data+State->col_num);
+    char *right=malloc(right_len+1);
+    strcpy(right,State->cursor_line->data+State->col_num);
+    State->cursor_line->data[State->col_num]='\0';
+    
+    State->cursor_line->data=realloc(State->cursor_line->data,len+strlen(State->clipboard)+1);
+    strcat(State->cursor_line->data,State->clipboard);
+    strcat(State->cursor_line->data,right);
+    State->col_num+=strlen(State->clipboard);
+    free(right);
     return SUCCESS;
 }

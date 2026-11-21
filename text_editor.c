@@ -3,7 +3,7 @@
 
 int main()
 {
-    Editor_State State={NULL,NULL,NULL,1,0,0};
+    Editor_State State={NULL,NULL,NULL,1,0,0,NULL};
     printf("_____________________________________________________________________________________________________________________\n");
     printf("\t\t\tTEXT EDITOR v1.0\n");
     printf("_____________________________________________________________________________________________________________________\n");
@@ -37,14 +37,25 @@ int main()
         else if(strncmp(command,"delete",6)==0)
         {
             if(validate_delete_command(command)==FAILURE)
+            {
             printf("Unknown Command Enter the proper Command\n\n");
+            }
+            else{
+            int num;
+            sscanf(command+7,"%d",&num);
+            if(num==0)
+            {
+            printf("Number of characters to delete should be more than 0\n");
+            printf("Delete command operation failed\n\n");
+            }
             else
             {
-                if(delete(&State,command+7)==FAILURE)
+                if(delete(&State,num)==FAILURE)
                 printf("Delete command operation failed\n\n");
                 else
                 printf("Delete command operation successful\n\n");
             }
+           }
         }
         else if(strcmp(command,"left")==0)
         move_left(&State);
@@ -62,9 +73,39 @@ int main()
         move_up(&State);
         else if(strcmp(command,"down")==0)
         move_down(&State);
+        else if(strncmp(command,"copy",4)==0)
+        {
+            if(validate_copycut_command(command,4)==FAILURE)
+            printf("Unknown command Enter proper command\n");
+            else
+            {
+                if(copy_or_cut(&State,command,4)==FAILURE)
+                printf("copy operation failed\n\n");
+                else
+                printf("copy operation successful\n\n");
+            }
+        }
+        else if(strncmp(command,"cut",3)==0)
+        {
+            if(validate_copycut_command(command,3)==FAILURE)
+            printf("Unknown command Enter proper command\n");
+            else
+            {
+                if(copy_or_cut(&State,command,3)==FAILURE)
+                printf("cut operation failed\n\n");
+                else
+                printf("cut operation successful\n\n");
+            }
+        }
+        else if(strcmp(command,"paste")==0)
+        {
+            if(paste(&State)==FAILURE)
+            printf("paste operation failed\n\n");
+           else
+           printf("Paste opertaion Successful\n\n");
+        }
 
-
-
-
+    if(strcmp(command,"print")!=0 && State.head!=NULL)
+    print(&State);
     }while(strcmp("exit",command)!=0);
 }

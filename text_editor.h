@@ -19,12 +19,13 @@ typedef struct state
 {
     Dll_t *head,*tail,*cursor_line;
     int line_num,col_num,total_lines;
+    char *clipboard;
 }Editor_State;
 
 int insert(Editor_State *State,char *command);
 int print(Editor_State *State);
 int validate_delete_command(char *command);
-int delete(Editor_State *State,char *command);
+int delete(Editor_State *State,int num);
 void move_left(Editor_State *State);
 void move_right(Editor_State *State);
 void sol(Editor_State *State);
@@ -33,10 +34,9 @@ void eof(Editor_State *State);
 void sof(Editor_State *State);
 void move_up(Editor_State *State);
 void move_down(Editor_State *State);
-
-
-
-
+int validate_copycut_command(char *command,int comlen);
+int copy_or_cut(Editor_State *State,char *command,int comlen);
+int paste(Editor_State *State);
 
 
 
