@@ -59,9 +59,9 @@ int main()
         else if(strcmp(command,"sof")==0)
         sof(&State);
         else if(strcmp(command,"up")==0)
-        up(&State);
+        move_up(&State);
         else if(strcmp(command,"down")==0)
-        down(&State);
+        move_down(&State);
 
 
 

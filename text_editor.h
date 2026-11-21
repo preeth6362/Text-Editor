@@ -31,8 +31,8 @@ void sol(Editor_State *State);
 void eol(Editor_State *State);
 void eof(Editor_State *State);
 void sof(Editor_State *State);
-void up(Editor_State *State);
-void down(Editor_State *State);
+void move_up(Editor_State *State);
+void move_down(Editor_State *State);
 
 
 
