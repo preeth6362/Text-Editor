@@ -37,6 +37,9 @@ void move_down(Editor_State *State);
 int validate_copycut_command(char *command,int comlen);
 int copy_or_cut(Editor_State *State,char *command,int comlen);
 int paste(Editor_State *State);
+int validate_replace_command(char *command);
+Dll_t *find_text(Editor_State *State,char *str);
+int replace_text(Editor_State *State,char *command);
 
 
 

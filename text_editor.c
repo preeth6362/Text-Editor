@@ -104,6 +104,23 @@ int main()
            else
            printf("Paste opertaion Successful\n\n");
         }
+        else if(strncmp(command,"replace",7)==0)
+        {
+            if(validate_replace_command(command)==FAILURE)
+            printf("Unknoen command Enter the proper command\n");
+            else
+            {
+                if(replace_text(&State,command+8)==FAILURE)
+                printf("replace operation failed\n\n");
+                else
+                printf("replace operation successful\n\n");
+            }
+        }
+
+
+
+
+
 
     if(strcmp(command,"print")!=0 && State.head!=NULL)
     print(&State);

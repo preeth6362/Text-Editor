@@ -132,3 +132,64 @@ int paste(Editor_State *State)
     free(right);
     return SUCCESS;
 }
+
+Dll_t *find_text(Editor_State *State,char *str)
+{
+    if(State->head==NULL)
+    {
+        printf("Document is Empty\n");
+        return NULL;
+    }
+    Dll_t *temp=State->head;
+    while(temp!=NULL)
+    {
+        if(strstr(temp->data,str))
+            return temp;
+        temp=temp->next;
+    }
+    return NULL;
+}
+int replace_text(Editor_State *State,char *command)
+{
+    int old_len=0,new_len=0,i;
+    for(i=0;command[i]!=' ';i++)
+    old_len++;
+    for(i=i+1;command[i]!='\0';i++)
+    new_len++;
+    char *old_text=malloc(old_len+1);
+    char *new_text=malloc(new_len+1);
+    sscanf(command,"%s %s",old_text,new_text);
+    Dll_t *text_node=find_text(State,old_text);
+    if(text_node==NULL)
+    {
+        printf("text not found\n");
+        free(old_text);
+        free(new_text);
+        return FAILURE;
+    }
+    while(text_node!=NULL)
+    {
+    int pos=0;
+    char *start;
+    while ((start = strstr(text_node->data + pos, old_text)) != NULL)
+    {
+    int left_len=start-text_node->data;
+    char *right=malloc(strlen(start+old_len)+1);
+    strcpy(right,start+old_len);
+    text_node->data[left_len]='\0';
+    text_node->data=realloc(text_node->data,left_len+new_len+strlen(right)+1);
+    strcat(text_node->data,new_text);
+    strcat(text_node->data,right);
+    free(right);
+    pos=left_len+new_len;
+    }
+    text_node=text_node->next;
+    }
+    if(State->cursor_line!=NULL)
+    {
+        if(strlen(State->cursor_line->data)<State->col_num)
+        State->col_num=strlen(State->cursor_line->data);
+    }
+    free(old_text);free(new_text);
+    return SUCCESS;
+}
