@@ -3,7 +3,7 @@
 
 int main()
 {
-    Editor_State State={NULL,NULL,NULL,1,0,0,NULL};
+    Editor_State State={NULL,NULL,NULL,1,0,0,NULL,NULL,NULL};
     printf("_____________________________________________________________________________________________________________________\n");
     printf("\t\t\tTEXT EDITOR v1.0\n");
     printf("_____________________________________________________________________________________________________________________\n");
@@ -50,7 +50,7 @@ int main()
             }
             else
             {
-                if(delete(&State,num)==FAILURE)
+                if(delete(&State,num,1)==FAILURE)
                 printf("Delete command operation failed\n\n");
                 else
                 printf("Delete command operation successful\n\n");
@@ -107,7 +107,7 @@ int main()
         else if(strncmp(command,"replace",7)==0)
         {
             if(validate_replace_command(command)==FAILURE)
-            printf("Unknoen command Enter the proper command\n");
+            printf("Unknown command Enter the proper command\n\n");
             else
             {
                 if(replace_text(&State,command+8)==FAILURE)
@@ -116,13 +116,25 @@ int main()
                 printf("replace operation successful\n\n");
             }
         }
+        else if(strcmp(command,"undo")==0)
+        {
+            if(undo(&State)==FAILURE)
+            printf("undo operation failed\n\n");
+            else
+            printf("undo operation successful\n\n");
+        }
+        else if(strcmp(command,"redo")==0)
+        {
+            if(redo(&State)==FAILURE)
+            printf("redo operation failed\n\n");
+            else
+            printf("redo operation successful\n\n");
+        }
 
 
 
 
-
-
-    if(strcmp(command,"print")!=0 && State.head!=NULL)
+    if(strcmp(command,"print")!=0 && strcmp(comman,"exit")!=0)
     print(&State);
     }while(strcmp("exit",command)!=0);
 }

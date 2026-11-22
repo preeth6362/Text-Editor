@@ -4,6 +4,7 @@ int insert(Editor_State *State,char *command)
 {
     Dll_t *nnode=malloc(sizeof(Dll_t));
     if(nnode==NULL)return FAILURE;
+    save_history(State);
     nnode->prev=NULL;
     nnode->next=NULL;
     if(command[6]=='\0')
@@ -55,7 +56,7 @@ else
     return SUCCESS;
 }
 
-int delete(Editor_State *State,int num)
+int delete(Editor_State *State,int num,int flag)
 {
     if(State->head==NULL)
     {
@@ -67,6 +68,8 @@ int delete(Editor_State *State,int num)
         printf("Not enough characters to delete\n");
         return FAILURE;
     }
+    if(flag)
+    save_history(State);
     int j=0;
     while(j<num)
     {
@@ -100,8 +103,9 @@ int copy_or_cut(Editor_State *State,char *command,int comlen)
     State->clipboard[j]='\0';
     if(comlen==3)
     {
+        save_history(State);
         State->col_num=right;
-        if(delete(State,right-left)==FAILURE)
+        if(delete(State,right-left,0)==FAILURE)
         return FAILURE;
     }
     return SUCCESS;
@@ -119,6 +123,7 @@ int paste(Editor_State *State)
         printf("The clipboard is Empty\n");
         return FAILURE;
     }
+    save_history(State);
     int len=strlen(State->cursor_line->data);
     int right_len=strlen(State->cursor_line->data+State->col_num);
     char *right=malloc(right_len+1);
@@ -167,6 +172,7 @@ int replace_text(Editor_State *State,char *command)
         free(new_text);
         return FAILURE;
     }
+    save_history(State);
     while(text_node!=NULL)
     {
     int pos=0;
