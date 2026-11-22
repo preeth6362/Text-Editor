@@ -35,27 +35,6 @@ int insert(Editor_State *State,char *command)
     return SUCCESS;
 }
 
-int print(Editor_State *State)
-{
-    Dll_t *temp=State->head;
-    int i=1;
-    printf("\t\t\t\tDocument Dispaly\n");
-    printf("_______________________________________________________________________________________________________________________________________\n");
-    if(temp==NULL)
-    printf("Empty Document\n");
-else
-{
-    while(temp!=NULL)
-    {
-        printf("Line %d: %s\n",i++,temp->data);
-        temp=temp->next;
-    }
-}
-    printf("Cursor Position: Line %d, Column %d\n",State->line_num,State->col_num);
-    printf("_______________________________________________________________________________________________________________________________________\n\n");
-    return SUCCESS;
-}
-
 int delete(Editor_State *State,int num,int flag)
 {
     if(State->head==NULL)

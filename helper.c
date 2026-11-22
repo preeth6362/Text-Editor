@@ -67,3 +67,29 @@ int validate_replace_command(char *command)
     if(command[8]==' ')return FAILURE;
     return SUCCESS;
 }
+
+int validate_filename(char *command)
+{
+    if(command[0]=='\0')return FAILURE;
+    int dot_count=0;
+    if(command[0]=='.')
+    {
+        printf("Improper File Format ");
+        return FAILURE;
+    }
+    for(int i=0;command[i]!='\0';i++)
+    {
+        if(command[i]==' ')
+        {
+            printf("Improper FIle Format ");
+            return FAILURE;
+        }
+        if(command[i]=='.')dot_count++;
+    }
+    if(dot_count!=1)
+    {
+        printf("Improper File Format ");
+        return FAILURE;
+    }
+    return SUCCESS;
+}

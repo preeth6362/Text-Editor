@@ -10,34 +10,40 @@ int main()
     char command[300];
     do
     {
+        char modified=1;
         printf("Text Editor Commands\n");
         printf("1. insert <text> - Add text as a new line at the end\n2. delete <num_chars> - Delete characters before the cursor\n");
         printf("3. undo - Undo the last operation\n4. redo - Redo the last undone operation\n5. print - Print the current document\n");
-        printf("6. replace <old> <new>\n7. exit - Exit the text editor\n\nEnter command: ");
+        printf("6. help To display all the supported commands\n7. exit - Exit the text editor\n\nEnter command: ");
         scanf(" %[^\n]",command);
     
         if(strncmp(command,"insert",6)==0)
         {
             if(command[6]!='\0'&&command[6]!=' ')
             {
+                modified=0;
                 printf("Unknown Command Enter the proper Command\n\n");
             }
             else
             {
-            if(insert(&State,command)==FAILURE)
+            if(insert(&State,command)==FAILURE){
+                modified=0;
             printf("Insert command operation failed\n\n");
+            }
             else
             printf("Insert command operation successful\n\n");
             }
         }
         else if(strcmp(command,"print")==0)
         {
+            modified=0;
             print(&State);
         }
         else if(strncmp(command,"delete",6)==0)
         {
             if(validate_delete_command(command)==FAILURE)
             {
+                modified=0;
             printf("Unknown Command Enter the proper Command\n\n");
             }
             else{
@@ -50,8 +56,10 @@ int main()
             }
             else
             {
-                if(delete(&State,num,1)==FAILURE)
+                if(delete(&State,num,1)==FAILURE){
+                    modified=0;
                 printf("Delete command operation failed\n\n");
+                }
                 else
                 printf("Delete command operation successful\n\n");
             }
@@ -84,15 +92,20 @@ int main()
                 else
                 printf("copy operation successful\n\n");
             }
+            modified=0;
         }
         else if(strncmp(command,"cut",3)==0)
         {
-            if(validate_copycut_command(command,3)==FAILURE)
+            if(validate_copycut_command(command,3)==FAILURE){
+                modified=0;
             printf("Unknown command Enter proper command\n");
+            }
             else
             {
-                if(copy_or_cut(&State,command,3)==FAILURE)
+                if(copy_or_cut(&State,command,3)==FAILURE){
+                    modified=0;
                 printf("cut operation failed\n\n");
+                }
                 else
                 printf("cut operation successful\n\n");
             }
@@ -118,23 +131,94 @@ int main()
         }
         else if(strcmp(command,"undo")==0)
         {
-            if(undo(&State)==FAILURE)
+            if(undo(&State)==FAILURE){
+                modified=0;
             printf("undo operation failed\n\n");
+            }
             else
             printf("undo operation successful\n\n");
         }
         else if(strcmp(command,"redo")==0)
         {
-            if(redo(&State)==FAILURE)
+            if(redo(&State)==FAILURE){
+                modified=0;
             printf("redo operation failed\n\n");
+            }
             else
             printf("redo operation successful\n\n");
         }
+        else if(strncmp(command,"find",4)==0)
+        {
+            if(command[4]!=' ')
+            printf("Unknown command enter proper command\n\n");
+            else if(command[5]=='\0')
+            printf("Unknown command enter proper command\n\n");
+            else
+            {
+                if(find(&State,command+5)==FAILURE)
+                printf("find operation failed\n\n");
+                else
+                printf("find operation successful\n\n");
+            }
+            modified=0;
+        }
+        else if(strncmp(command,"open",4)==0)
+        {
+            if(command[4]!=' '|| validate_filename(command+5)==FAILURE){
+                modified=0;
+            printf("Enter the Proper command\n\n");
+            }
+            else
+            {
+                if(open_file(&State,command+5)==FAILURE){
+                    modified=0;
+                printf("file not opened\n\n");
+                }
+                else
+                printf("file opend successfully\n\n");
+            }
+        }
+        else if(strncmp(command,"save",4)==0)
+        {
+            if(command[4]!=' '|| validate_filename(command+5)==FAILURE){
+                modified=0;
+            printf("Enter the Proper command\n\n");
+            }
+            else
+            {
+                if(save_file(&State,command+5)==FAILURE){
+                    modified=0;
+                printf("file not saved\n\n");
+                }
+                else
+                printf("file saved successfully\n\n");
+            }
+        }
+        else if(strcmp(command,"close")==0)
+        {
+            if(close_file(&State)==FAILURE){
+                modified=0;
+            printf("file not closed\n\n");
+            }
+            else
+            printf("file closed\n\n");
+        }
+        else if(strcmp(command,"help")==0)
+        {
+            modified=0;
+        print_supported_commands();
+        }
+        else if(strcmp(command,"exit")==0)
+        {
+            free_list(State.head);
+            clear_stack(&State.undo_stack);
+            clear_stack(&State.redo_stack);
+            free(State.clipboard);
+        }
+        else
+        printf("Unknown command Enter proper command\n\n");
 
-
-
-
-    if(strcmp(command,"print")!=0 && strcmp(comman,"exit")!=0)
+    if(strcmp(command,"print")!=0 && strcmp(command,"exit")!=0 && modified==1)
     print(&State);
     }while(strcmp("exit",command)!=0);
 }

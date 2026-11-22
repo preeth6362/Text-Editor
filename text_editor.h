@@ -1,5 +1,5 @@
-#ifndef text
-#define text
+#ifndef text_edit
+#define text_edit
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -63,11 +63,14 @@ void save_history(Editor_State *State);
 int undo(Editor_State *State);
 int redo(Editor_State *State);
 
+int find(Editor_State *State,char *command);
 
+//file functions
+int validate_filename(char *command);
+int open_file(Editor_State *State,char *filename);
+int save_file(Editor_State *State,char *filename);
+int close_file(Editor_State *State);
 
-
-
-
-
+void print_supported_commands();
 
 #endif
